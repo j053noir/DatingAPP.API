@@ -1,0 +1,14 @@
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\bin\Debug\netcoreapp2.2\DatinApp.API.deps.json
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\bin\Debug\netcoreapp2.2\DatinApp.API.runtimeconfig.json
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\bin\Debug\netcoreapp2.2\DatinApp.API.runtimeconfig.dev.json
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\bin\Debug\netcoreapp2.2\DatinApp.API.dll
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\bin\Debug\netcoreapp2.2\DatinApp.API.pdb
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.csprojAssemblyReference.cache
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.csproj.CoreCompileInputs.cache
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.RazorAssemblyInfo.cache
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.RazorAssemblyInfo.cs
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.AssemblyInfoInputs.cache
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.AssemblyInfo.cs
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.RazorTargetAssemblyInfo.cache
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.dll
+C:\Users\jroja\source\repos\dotnet_core\DatinApp.API\obj\Debug\netcoreapp2.2\DatinApp.API.pdb
