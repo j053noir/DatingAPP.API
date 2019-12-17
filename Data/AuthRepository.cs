@@ -23,7 +23,7 @@ namespace DatinApp.API.Data
                 return null;
             }
 
-            if (!VerifyPasswordHas(password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
             {
                 return null;
             }
@@ -31,13 +31,21 @@ namespace DatinApp.API.Data
             return user;
         }
 
-        private bool VerifyPasswordHas(string password, byte[] passwordHash, byte[] passwordSalt)
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
             {
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
 
-                return computedHash.Equals(passwordHash);
+                for (int i = 0; i < computedHash.Length - 1; i++)
+                {
+                    if (computedHash[i] != passwordHash[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
 
