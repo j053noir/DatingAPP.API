@@ -14,7 +14,7 @@
     "Country": "Paraguay",
     "Photos": [
       {
-        "url": "https://randomuser.me/api/portraits/men/8.jpg",
+        "url": "https://randomuser.me/api/portraits/women/8.jpg",
         "isMain": true,
         "description": "Ad consequat magna veniam pariatur ipsum exercitation laborum est mollit ea ea eu."
       }
@@ -35,7 +35,7 @@
     "Country": "El Salvador",
     "Photos": [
       {
-        "url": "https://randomuser.me/api/portraits/men/13.jpg",
+        "url": "https://randomuser.me/api/portraits/women/13.jpg",
         "isMain": true,
         "description": "Excepteur et proident consectetur amet id excepteur."
       }
@@ -56,7 +56,7 @@
     "Country": "Christmas Island",
     "Photos": [
       {
-        "url": "https://randomuser.me/api/portraits/men/45.jpg",
+        "url": "https://randomuser.me/api/portraits/women/45.jpg",
         "isMain": true,
         "description": "Fugiat commodo velit ad laborum amet magna ea non qui aliquip."
       }
@@ -77,7 +77,7 @@
     "Country": "Lesotho",
     "Photos": [
       {
-        "url": "https://randomuser.me/api/portraits/men/73.jpg",
+        "url": "https://randomuser.me/api/portraits/women/73.jpg",
         "isMain": true,
         "description": "Nisi irure ut tempor ex proident dolore officia sit ut officia Lorem in cupidatat deserunt."
       }
@@ -98,7 +98,7 @@
     "Country": "Suriname",
     "Photos": [
       {
-        "url": "https://randomuser.me/api/portraits/men/14.jpg",
+        "url": "https://randomuser.me/api/portraits/women/14.jpg",
         "isMain": true,
         "description": "Et consequat incididunt Lorem officia consectetur elit incididunt tempor reprehenderit tempor."
       }
