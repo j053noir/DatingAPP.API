@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using DatinApp.API.Data;
+using DatinApp.API.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +13,11 @@ namespace DatinApp.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IDatingRepository _repo;
-        public UsersController(IDatingRepository repo)
+        public UsersController(IDatingRepository repo, IMapper mapper)
         {
+            this._mapper = mapper;
             this._repo = repo;
         }
 
@@ -20,14 +25,20 @@ namespace DatinApp.API.Controllers
         public async Task<IActionResult> GetUsers()
         {
             var users = await this._repo.GetUsers();
-            return Ok(users);
+
+            var usersResponse = this._mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            return Ok(usersResponse);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUser(int id)
         {
             var user = await this._repo.GetUser(id);
-            return Ok(user);
+
+            var userResponse = this._mapper.Map<UserForDetailDto>(user);
+
+            return Ok(userResponse);
         }
     }
 }
