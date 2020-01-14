@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using DatinApp.API.Data;
@@ -39,6 +40,26 @@ namespace DatinApp.API.Controllers
             var userResponse = this._mapper.Map<UserForDetailDto>(user);
 
             return Ok(userResponse);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserForUpdateDto userForUpdateDto)
+        {
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var userFromRepo = await this._repo.GetUser(id);
+
+            this._mapper.Map(userForUpdateDto, userFromRepo);
+
+            if (await this._repo.SaveAll())
+            {
+                return NoContent();
+            }
+
+            throw new System.Exception($"Updating user with {id} failed on save");
         }
     }
 }
