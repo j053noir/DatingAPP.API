@@ -22,6 +22,13 @@ namespace DatinApp.API.Data
             this._context.Remove(entity);
         }
 
+        public async Task<Photo> GetPhoto(int id)
+        {
+            var photo = await this._context.Photos.FirstOrDefaultAsync(p => p.Id == id);
+
+            return photo;
+        }
+
         public async Task<User> GetUser(int Id)
         {
             var user = await this._context.Users
