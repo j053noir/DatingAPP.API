@@ -105,5 +105,40 @@ namespace DatinApp.API.Controllers
 
             return BadRequest("Couldn't not add the photo");
         }
+
+        [HttpPost("{id}/setMain")]
+        public async Task<IActionResult> SetMainPhoto(int userId, int id)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var userFromRepo = await this._repo.GetUser(userId);
+
+            if (!userFromRepo.Photos.Any(p => p.Id == id))
+            {
+                return Forbid();
+            }
+
+            var photoFromRepo = await this._repo.GetPhoto(id);
+
+            if (photoFromRepo.IsMain)
+            {
+                return BadRequest("The selected photo is already set as main.");
+            }
+
+            var curretMainPhoto = await this._repo.GetMainPhotoForUser(userId);
+
+            curretMainPhoto.IsMain = false;
+            photoFromRepo.IsMain = true;
+
+            if (await this._repo.SaveAll())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Couldn't set selected photo as main");
+        }
     }
 }
