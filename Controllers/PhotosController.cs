@@ -140,5 +140,51 @@ namespace DatinApp.API.Controllers
 
             return BadRequest("Couldn't set selected photo as main");
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePhoto(int userId, int id)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var userFromRepo = await this._repo.GetUser(userId);
+
+            if (!userFromRepo.Photos.Any(p => p.Id == id))
+            {
+                return Forbid();
+            }
+
+            var photoFromRepo = await this._repo.GetPhoto(id);
+
+            if (photoFromRepo.IsMain)
+            {
+                return BadRequest("You cannot delete your main photo.");
+            }
+
+            if (!string.IsNullOrEmpty(photoFromRepo.PublicId))
+            {
+                var deleteParams = new DeletionParams(photoFromRepo.PublicId);
+
+                var result = this._cloudinary.Destroy(deleteParams);
+
+                if (result.Result.ToLower() == "ok")
+                {
+                    this._repo.Delete(photoFromRepo);
+                }
+            }
+            else
+            {
+                this._repo.Delete(photoFromRepo);
+            }
+
+            if (await this._repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest("Couldn't delete the photo");
+        }
     }
 }
