@@ -41,15 +41,15 @@ namespace DatinApp.API.Controllers
                 return BadRequest("Username is already taken");
             }
 
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username
-            };
+            var userToCreate = this._mapper.Map<User>(userForRegisterDto);
 
             var createdUser = await this._repo
                                         .Register(userToCreate, userForRegisterDto.Password);
 
-            return StatusCode(201);
+            var userForReturn = this._mapper.Map<UserForReturnDto>(createdUser);
+
+            return CreatedAtRoute
+                    ("GetUser", new { controller = "Users", id = createdUser.Id }, userForReturn);
         }
 
 
