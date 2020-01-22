@@ -58,6 +58,7 @@ namespace DatinApp.API
                             ValidateAudience = false
                         };
                     });
+            services.AddScoped<LogUserActivityFilter>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
