@@ -25,7 +25,7 @@ namespace DatinApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers(PaginationParams paginationParams)
+        public async Task<IActionResult> GetUsers([FromQuery] PaginationParams paginationParams)
         {
             var users = await this._repo.GetUsers(paginationParams);
 
