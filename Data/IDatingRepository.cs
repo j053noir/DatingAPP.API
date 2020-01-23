@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DatinApp.API.Helpers;
 using DatinApp.API.Models;
 
 namespace DatinApp.API.Data
@@ -11,7 +12,7 @@ namespace DatinApp.API.Data
         Task<Photo> GetMainPhotoForUser(int userId);
         Task<Photo> GetPhoto(int id);
         Task<User> GetUser(int id);
-        Task<IEnumerable<User>> GetUsers();
+        Task<PagedList<User>> GetUsers(PaginationParams paginationParams);
         Task<bool> SaveAll();
     }
 }
