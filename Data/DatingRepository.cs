@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DatinApp.API.Helpers;
@@ -59,6 +60,18 @@ namespace DatinApp.API.Data
             if (!string.IsNullOrEmpty(paginationParams.Gender))
             {
                 users = users.Where(u => u.Gender == paginationParams.Gender);
+            }
+
+            if (paginationParams.MaxAge.HasValue && paginationParams.MaxAge.Value >= 0)
+            {
+                var minDob = DateTime.Today.AddYears(-paginationParams.MaxAge.Value - 1);
+                users = users.Where(u => u.DateOfBirth >= minDob);
+            }
+
+            if (paginationParams.MinAge.HasValue && paginationParams.MinAge.Value >= 0)
+            {
+                var maxDbo = DateTime.Today.AddYears(-paginationParams.MinAge.Value);
+                users = users.Where(u => u.DateOfBirth <= maxDbo);
             }
 
             return await PagedList<User>.CreateASync(users,

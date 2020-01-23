@@ -5,5 +5,7 @@ namespace DatinApp.API.Helpers
         public bool SkipCurrentUser { get; set; } = true;
         public int? UserId { get; set; }
         public string Gender { get; set; }
+        public int? MinAge { get; set; }
+        public int? MaxAge { get; set; }
     }
 }
