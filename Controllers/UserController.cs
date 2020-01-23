@@ -25,8 +25,22 @@ namespace DatinApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers([FromQuery] PaginationParams paginationParams)
+        public async Task<IActionResult> GetUsers([FromQuery] UsersPaginationParams paginationParams)
         {
+            if (paginationParams.SkipCurrentUser)
+            {
+                var currentUserId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                var userFromRepo = await this._repo.GetUser(currentUserId);
+
+                paginationParams.UserId = currentUserId;
+
+                if (string.IsNullOrEmpty(paginationParams.Gender))
+                {
+                    paginationParams.Gender = userFromRepo.Gender == "male" ? "female" : "male";
+                }
+            }
+
             var users = await this._repo.GetUsers(paginationParams);
 
             var usersResponse = this._mapper.Map<IEnumerable<UserForListDto>>(users);
