@@ -25,11 +25,16 @@ namespace DatinApp.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(PaginationParams paginationParams)
         {
-            var users = await this._repo.GetUsers();
+            var users = await this._repo.GetUsers(paginationParams);
 
             var usersResponse = this._mapper.Map<IEnumerable<UserForListDto>>(users);
+
+            Response.AddPagination(users.CurrentPage,
+                                   users.PageSize,
+                                   users.TotalRecords,
+                                   users.TotalPages);
 
             return Ok(usersResponse);
         }
