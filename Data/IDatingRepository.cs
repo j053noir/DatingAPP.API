@@ -12,7 +12,7 @@ namespace DatinApp.API.Data
         Task<Photo> GetMainPhotoForUser(int userId);
         Task<Photo> GetPhoto(int id);
         Task<User> GetUser(int id);
-        Task<PagedList<User>> GetUsers(PaginationParams paginationParams);
+        Task<PagedList<User>> GetUsers(UsersPaginationParams paginationParams);
         Task<bool> SaveAll();
     }
 }

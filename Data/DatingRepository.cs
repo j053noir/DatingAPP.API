@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using DatinApp.API.Helpers;
 using DatinApp.API.Models;
@@ -46,9 +47,19 @@ namespace DatinApp.API.Data
             return user;
         }
 
-        public async Task<PagedList<User>> GetUsers(PaginationParams paginationParams)
+        public async Task<PagedList<User>> GetUsers(UsersPaginationParams paginationParams)
         {
-            var users = this._context.Users.Include(u => u.Photos);
+            var users = this._context.Users.Include(u => u.Photos).AsQueryable();
+
+            if (paginationParams.UserId != null)
+            {
+                users = users.Where(u => u.Id != paginationParams.UserId);
+            }
+
+            if (!string.IsNullOrEmpty(paginationParams.Gender))
+            {
+                users = users.Where(u => u.Gender == paginationParams.Gender);
+            }
 
             return await PagedList<User>.CreateASync(users,
                                                      paginationParams.PageNumber,
