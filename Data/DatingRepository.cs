@@ -24,6 +24,12 @@ namespace DatinApp.API.Data
             this._context.Remove(entity);
         }
 
+        public async Task<Like> GetLike(int likerId, int likeeId)
+        {
+            return await this._context.Likes
+                            .FirstOrDefaultAsync(u => u.LikerId == likerId && u.LikeeId == likeeId);
+        }
+
         public async Task<Photo> GetMainPhotoForUser(int userId)
         {
             var photo = await this._context.Photos

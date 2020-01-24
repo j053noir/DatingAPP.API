@@ -9,6 +9,7 @@ namespace DatinApp.API.Data
     {
         void Add<T>(T entity) where T : class;
         void Delete<T>(T entity) where T : class;
+        Task<Like> GetLike(int userId, int recipientId);
         Task<Photo> GetMainPhotoForUser(int userId);
         Task<Photo> GetPhoto(int id);
         Task<User> GetUser(int id);
