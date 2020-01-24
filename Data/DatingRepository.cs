@@ -74,6 +74,30 @@ namespace DatinApp.API.Data
                 users = users.Where(u => u.DateOfBirth <= maxDbo);
             }
 
+            switch (paginationParams.OrderBy)
+            {
+                case "created":
+                    users = paginationParams.OrderDirection == "descending" ?
+                             users.OrderByDescending(u => u.Created) :
+                             users.OrderBy(u => u.Created);
+                    break;
+                case "known_as":
+                    users = paginationParams.OrderDirection == "descending" ?
+                             users.OrderByDescending(u => u.KnownAs) :
+                             users.OrderBy(u => u.KnownAs);
+                    break;
+                case "username":
+                    users = paginationParams.OrderDirection == "descending" ?
+                             users.OrderByDescending(u => u.Username) :
+                             users.OrderBy(u => u.Username);
+                    break;
+                default:
+                    users = paginationParams.OrderDirection == "descending" ?
+                             users.OrderByDescending(u => u.LastActive) :
+                             users.OrderBy(u => u.LastActive);
+                    break;
+            }
+
             return await PagedList<User>.CreateASync(users,
                                                      paginationParams.PageNumber,
                                                      paginationParams.PageSize);
