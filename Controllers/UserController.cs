@@ -5,6 +5,7 @@ using AutoMapper;
 using DatinApp.API.Data;
 using DatinApp.API.DTOs;
 using DatinApp.API.Helpers;
+using DatinApp.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -61,6 +62,42 @@ namespace DatinApp.API.Controllers
             var userResponse = this._mapper.Map<UserForDetailDto>(user);
 
             return Ok(userResponse);
+        }
+
+        [HttpPost("{id}/like/{likeeId}")]
+        public async Task<ActionResult> LikeUser(int id, int likeeId)
+        {
+            if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var like = await this._repo.GetLike(id, likeeId);
+
+            if (like != null)
+            {
+                return BadRequest("You already liked this user.");
+            }
+
+            if (await this._repo.GetUser(likeeId) == null)
+            {
+                return BadRequest($"User {id} couldn't be liked.");
+            }
+
+            like = new Models.Like
+            {
+                LikeeId = likeeId,
+                LikerId = id
+            };
+
+            this._repo.Add<Like>(like);
+
+            if (await this._repo.SaveAll())
+            {
+                return Ok();
+            }
+
+            return BadRequest($"Failed to like user {likeeId}.");
         }
 
         [HttpPut("{id}")]
