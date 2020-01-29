@@ -83,12 +83,12 @@ namespace DatinApp.API.Data
 
             if (paginationParams.UserId != null && paginationParams.Likers)
             {
-                var userLikers = await GetUserLikes(paginationParams.UserId.Value, false);
+                var userLikers = await GetUserLikers(paginationParams.UserId.Value);
                 users = users.Where(u => userLikers.Contains(u.Id));
             }
             else if (paginationParams.UserId != null && paginationParams.Likees)
             {
-                var userLikees = await GetUserLikes(paginationParams.UserId.Value, true);
+                var userLikees = await GetUserLikees(paginationParams.UserId.Value);
                 users = users.Where(u => userLikees.Contains(u.Id));
             }
 
@@ -121,20 +121,22 @@ namespace DatinApp.API.Data
                                                      paginationParams.PageSize);
         }
 
-        private async Task<IEnumerable<int>> GetUserLikes(int userId, bool likers)
+        private async Task<IEnumerable<int>> GetUserLikers(int userId)
         {
             var user = await this._context.Users.Include(x => x.Likers)
                                                 .Include(x => x.Likees)
                                                 .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (likers)
-            {
-                return user.Likers.Where(u => u.LikeeId == userId).Select(u => u.LikerId);
-            }
-            else
-            {
-                return user.Likers.Where(u => u.LikerId == userId).Select(u => u.LikeeId);
-            }
+            return user.Likers.Where(u => u.LikeeId == userId).Select(u => u.LikerId);
+        }
+
+        private async Task<IEnumerable<int>> GetUserLikees(int userId)
+        {
+            var user = await this._context.Users.Include(x => x.Likers)
+                                                .Include(x => x.Likees)
+                                                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            return user.Likees.Where(u => u.LikerId == userId).Select(u => u.LikeeId);
         }
 
         public async Task<bool> SaveAll()
