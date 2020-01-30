@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -22,6 +23,30 @@ namespace DatinApp.API.Controllers
         {
             this._mapper = mapper;
             this._repo = repo;
+        }
+
+        [HttpGet("", Name = "GetMessages")]
+        public async Task<IActionResult> GetMesagesForUser(
+            int userId,
+            [FromQuery] MessagePaginationParams messageParams)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            messageParams.UserId = userId;
+
+            var messagesFromRepo = await this._repo.GetMessagesForUser(messageParams);
+
+            var messages = this._mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
+
+            Response.AddPagination(messagesFromRepo.CurrentPage,
+                                   messagesFromRepo.PageSize,
+                                   messagesFromRepo.TotalRecords,
+                                   messagesFromRepo.TotalPages);
+
+            return Ok(messages);
         }
 
         [HttpGet("{id}", Name = "GetMessage")]
@@ -65,7 +90,7 @@ namespace DatinApp.API.Controllers
 
             if (await this._repo.SaveAll())
             {
-                var messageToReturn = this._mapper.Map<MessageForCreationDto>(message);
+                var messageToReturn = this._mapper.Map<MessageToReturnDto>(message);
 
                 return CreatedAtRoute("GetMessage", new { id = message.Id }, messageToReturn);
             }
