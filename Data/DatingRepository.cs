@@ -44,9 +44,33 @@ namespace DatinApp.API.Data
             return await this._context.Messages.FirstOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<PagedList<Message>> GetMessagesForUser()
+        public async Task<PagedList<Message>> GetMessagesForUser(
+            MessagePaginationParams paginationParams
+        )
         {
-            throw new NotImplementedException();
+            var messages = this._context.Messages
+                                        .Include(u => u.Sender).ThenInclude(p => p.Photos)
+                                        .Include(u => u.Recipient).ThenInclude(p => p.Photos)
+                                        .AsQueryable();
+
+            switch (paginationParams.MessageContainer.ToLower())
+            {
+                case "inbox":
+                    messages = messages.Where(m => m.RecipientId == paginationParams.UserId);
+                    break;
+                case "outbox":
+                    messages = messages.Where(m => m.SenderId == paginationParams.UserId);
+                    break;
+                default:
+                    messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
+                                                   m.IsRead == false);
+                    break;
+            }
+
+            messages = messages.OrderByDescending(m => m.MessageSent);
+
+            return await PagedList<Message>
+                     .CreateASync(messages, paginationParams.PageNumber, paginationParams.PageSize);
         }
 
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
@@ -107,7 +131,7 @@ namespace DatinApp.API.Data
                 users = users.Where(u => userLikees.Contains(u.Id));
             }
 
-            switch (paginationParams.OrderBy)
+            switch (paginationParams.OrderBy.ToLower())
             {
                 case "created":
                     users = paginationParams.OrderDirection == "descending" ?

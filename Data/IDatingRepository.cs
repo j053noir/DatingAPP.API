@@ -12,7 +12,7 @@ namespace DatinApp.API.Data
         Task<Like> GetLike(int userId, int recipientId);
         Task<Photo> GetMainPhotoForUser(int userId);
         Task<Message> GetMessage(int id);
-        Task<PagedList<Message>> GetMessagesForUser();
+        Task<PagedList<Message>> GetMessagesForUser(MessagePaginationParams messageParams);
         Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId);
         Task<Photo> GetPhoto(int id);
         Task<User> GetUser(int id);
