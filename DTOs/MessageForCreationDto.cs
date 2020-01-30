@@ -11,10 +11,7 @@ namespace DatinApp.API.DTOs
 
         public MessageForCreationDto()
         {
-            if (this.MessageSent == null)
-            {
-                this.MessageSent = DateTime.Now;
-            }
+            this.MessageSent = this.MessageSent != null ? this.MessageSent : DateTime.Now;
         }
     }
 }
