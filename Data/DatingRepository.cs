@@ -39,6 +39,21 @@ namespace DatinApp.API.Data
             return photo;
         }
 
+        public async Task<Message> GetMessage(int id)
+        {
+            return await this._context.Messages.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<PagedList<Message>> GetMessagesForUser()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Photo> GetPhoto(int id)
         {
             var photo = await this._context.Photos.FirstOrDefaultAsync(p => p.Id == id);
