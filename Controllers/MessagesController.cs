@@ -67,6 +67,21 @@ namespace DatinApp.API.Controllers
             return Ok(messageFromRepo);
         }
 
+        [HttpGet("threads/{recipientId}", Name = "GetMessageThread")]
+        public async Task<IActionResult> GetMessageThread(int userId, int recipientId)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var messagesFromRepo = await this._repo.GetMessageThread(userId, recipientId);
+
+            var messageThread = this._mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
+
+            return Ok(messageThread);
+        }
+
         [HttpPost(Name = "CreateMessage")]
         public async Task<IActionResult> CreateMesage(int userId, MessageForCreationDto messageForCreationDto)
         {
