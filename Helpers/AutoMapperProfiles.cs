@@ -42,6 +42,10 @@ namespace DatinApp.API.Helpers
             CreateMap<Photo, PhotoForReturnDto>();
             CreateMap<UserForRegisterDto, User>();
             CreateMap<MessageForCreationDto, Message>().ReverseMap();
+            CreateMap<Message, MessageToReturnDto>().ForMember(
+                dest => dest.DateSent,
+                opt => opt.MapFrom(src => src.MessageSent)
+            );
         }
     }
 }
