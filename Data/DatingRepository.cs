@@ -53,18 +53,26 @@ namespace DatinApp.API.Data
                                         .Include(u => u.Recipient).ThenInclude(p => p.Photos)
                                         .AsQueryable();
 
-            switch (paginationParams.MessageContainer.ToLower())
+            if (!string.IsNullOrEmpty(paginationParams.MessageContainer))
             {
-                case "inbox":
-                    messages = messages.Where(m => m.RecipientId == paginationParams.UserId);
-                    break;
-                case "outbox":
-                    messages = messages.Where(m => m.SenderId == paginationParams.UserId);
-                    break;
-                default:
-                    messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
+                switch (paginationParams.MessageContainer.ToLower())
+                {
+                    case "inbox":
+                        messages = messages.Where(m => m.RecipientId == paginationParams.UserId);
+                        break;
+                    case "outbox":
+                        messages = messages.Where(m => m.SenderId == paginationParams.UserId);
+                        break;
+                    default:
+                        messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
+                                                       m.IsRead == false);
+                        break;
+                }
+            }
+            else
+            {
+                messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
                                                    m.IsRead == false);
-                    break;
             }
 
             messages = messages.OrderByDescending(m => m.MessageSent);
@@ -139,28 +147,37 @@ namespace DatinApp.API.Data
                 users = users.Where(u => userLikees.Contains(u.Id));
             }
 
-            switch (paginationParams.OrderBy.ToLower())
+            if (!string.IsNullOrEmpty(paginationParams.OrderBy))
             {
-                case "created":
-                    users = paginationParams.OrderDirection == "descending" ?
-                             users.OrderByDescending(u => u.Created) :
-                             users.OrderBy(u => u.Created);
-                    break;
-                case "known_as":
-                    users = paginationParams.OrderDirection == "descending" ?
-                             users.OrderByDescending(u => u.KnownAs) :
-                             users.OrderBy(u => u.KnownAs);
-                    break;
-                case "username":
-                    users = paginationParams.OrderDirection == "descending" ?
-                             users.OrderByDescending(u => u.Username) :
-                             users.OrderBy(u => u.Username);
-                    break;
-                default:
-                    users = paginationParams.OrderDirection == "descending" ?
+                switch (paginationParams.OrderBy.ToLower())
+                {
+                    case "created":
+                        users = paginationParams.OrderDirection == "descending" ?
+                                 users.OrderByDescending(u => u.Created) :
+                                 users.OrderBy(u => u.Created);
+                        break;
+                    case "known_as":
+                        users = paginationParams.OrderDirection == "descending" ?
+                                 users.OrderByDescending(u => u.KnownAs) :
+                                 users.OrderBy(u => u.KnownAs);
+                        break;
+                    case "username":
+                        users = paginationParams.OrderDirection == "descending" ?
+                                 users.OrderByDescending(u => u.Username) :
+                                 users.OrderBy(u => u.Username);
+                        break;
+                    default:
+                        users = paginationParams.OrderDirection == "descending" ?
+                                 users.OrderByDescending(u => u.LastActive) :
+                                 users.OrderBy(u => u.LastActive);
+                        break;
+                }
+            }
+            else
+            {
+                users = paginationParams.OrderDirection == "descending" ?
                              users.OrderByDescending(u => u.LastActive) :
                              users.OrderBy(u => u.LastActive);
-                    break;
             }
 
             return await PagedList<User>.CreateASync(users,
