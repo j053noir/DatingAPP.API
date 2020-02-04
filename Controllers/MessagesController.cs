@@ -114,5 +114,42 @@ namespace DatinApp.API.Controllers
 
             return BadRequest("Failed on saving message");
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteMessage(int userId, int id)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var messageFromRepo = await this._repo.GetMessage(id);
+
+            if (messageFromRepo.SenderId != userId && messageFromRepo.RecipientId != userId)
+            {
+                return Forbid();
+            }
+
+            if (messageFromRepo.SenderId == userId)
+            {
+                messageFromRepo.SenderDeleted = true;
+            }
+            else if (messageFromRepo.RecipientId == userId)
+            {
+                messageFromRepo.RecipientDeleted = true;
+            }
+
+            if (messageFromRepo.SenderDeleted && messageFromRepo.RecipientDeleted)
+            {
+                this._repo.Delete(messageFromRepo);
+            }
+
+            if (await this._repo.SaveAll())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Message couldn't be deleted.");
+        }
     }
 }
