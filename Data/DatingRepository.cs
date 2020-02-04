@@ -58,13 +58,16 @@ namespace DatinApp.API.Data
                 switch (paginationParams.MessageContainer.ToLower())
                 {
                     case "inbox":
-                        messages = messages.Where(m => m.RecipientId == paginationParams.UserId);
+                        messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
+                                                       m.RecipientDeleted == false);
                         break;
                     case "outbox":
-                        messages = messages.Where(m => m.SenderId == paginationParams.UserId);
+                        messages = messages.Where(m => m.SenderId == paginationParams.UserId &&
+                                                       m.SenderDeleted == false);
                         break;
                     default:
                         messages = messages.Where(m => m.RecipientId == paginationParams.UserId &&
+                                                       m.RecipientDeleted == false &&
                                                        m.IsRead == false);
                         break;
                 }
@@ -85,10 +88,16 @@ namespace DatinApp.API.Data
         {
             return await this._context.Messages.Include(u => u.Sender).ThenInclude(p => p.Photos)
                                                .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-                                               .Where(m => m.RecipientId == userId &&
-                                                            m.SenderId == recipientId ||
+                                               .Where(m => (
+                                                            m.RecipientId == userId &&
+                                                            m.RecipientDeleted == false &&
+                                                            m.SenderId == recipientId
+                                                           ) ||
+                                                           (
                                                             m.RecipientId == recipientId &&
-                                                            m.SenderId == userId)
+                                                            m.SenderDeleted == false &&
+                                                            m.SenderId == userId
+                                                           ))
                                                .OrderByDescending(m => m.MessageSent)
                                                .ToListAsync();
 
