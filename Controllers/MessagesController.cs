@@ -85,7 +85,9 @@ namespace DatinApp.API.Controllers
         [HttpPost(Name = "CreateMessage")]
         public async Task<IActionResult> CreateMesage(int userId, MessageForCreationDto messageForCreationDto)
         {
-            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            var sender = await this._repo.GetUser(userId);
+
+            if (sender.Id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
                 return Forbid();
             }
