@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -77,13 +79,23 @@ namespace DatinApp.API.Controllers
 
             var messagesFromRepo = await this._repo.GetMessageThread(userId, recipientId);
 
+            foreach (var message in messagesFromRepo.Where(m => m.IsRead == false &&
+                                                                m.RecipientId == userId))
+            {
+                message.IsRead = true;
+
+            }
+
+            await this._repo.SaveAll();
+
             var messageThread = this._mapper.Map<IEnumerable<MessageToReturnDto>>(messagesFromRepo);
 
             return Ok(messageThread);
         }
 
         [HttpPost(Name = "CreateMessage")]
-        public async Task<IActionResult> CreateMesage(int userId, MessageForCreationDto messageForCreationDto)
+        public async Task<IActionResult> CreateMesage(int userId,
+                                                      MessageForCreationDto messageForCreationDto)
         {
             var sender = await this._repo.GetUser(userId);
 
@@ -150,6 +162,32 @@ namespace DatinApp.API.Controllers
             }
 
             return BadRequest("Message couldn't be deleted.");
+        }
+
+        [HttpGet("{id}/read")]
+        public async Task<IActionResult> MarkMessageAsRead(int userId, int id)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Forbid();
+            }
+
+            var message = await this._repo.GetMessage(id);
+
+            if (message.RecipientId != userId)
+            {
+                return Forbid();
+            }
+
+            message.IsRead = true;
+            message.DateRead = DateTime.Now;
+
+            if (await this._repo.SaveAll())
+            {
+                return NoContent();
+            }
+
+            return BadRequest("Could not mark message as read.");
         }
     }
 }
