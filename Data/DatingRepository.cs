@@ -48,10 +48,7 @@ namespace DatinApp.API.Data
             MessagePaginationParams paginationParams
         )
         {
-            var messages = this._context.Messages
-                                        .Include(u => u.Sender).ThenInclude(p => p.Photos)
-                                        .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-                                        .AsQueryable();
+            var messages = this._context.Messages.AsQueryable();
 
             if (!string.IsNullOrEmpty(paginationParams.MessageContainer))
             {
@@ -86,9 +83,7 @@ namespace DatinApp.API.Data
 
         public async Task<IEnumerable<Message>> GetMessageThread(int userId, int recipientId)
         {
-            return await this._context.Messages.Include(u => u.Sender).ThenInclude(p => p.Photos)
-                                               .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-                                               .Where(m => (
+            return await this._context.Messages.Where(m => (
                                                             m.RecipientId == userId &&
                                                             m.RecipientDeleted == false &&
                                                             m.SenderId == recipientId
@@ -112,16 +107,14 @@ namespace DatinApp.API.Data
 
         public async Task<User> GetUser(int id)
         {
-            var user = await this._context.Users
-                            .Include(u => u.Photos)
-                            .FirstOrDefaultAsync(u => u.Id == id);
+            var user = await this._context.Users.FirstOrDefaultAsync(u => u.Id == id);
 
             return user;
         }
 
         public async Task<PagedList<User>> GetUsers(UsersPaginationParams paginationParams)
         {
-            var users = this._context.Users.Include(u => u.Photos).AsQueryable();
+            var users = this._context.Users.AsQueryable();
 
             if (paginationParams.UserId != null)
             {
@@ -196,18 +189,14 @@ namespace DatinApp.API.Data
 
         private async Task<IEnumerable<int>> GetUserLikers(int userId)
         {
-            var user = await this._context.Users.Include(x => x.Likers)
-                                                .Include(x => x.Likees)
-                                                .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await this._context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             return user.Likers.Where(u => u.LikeeId == userId).Select(u => u.LikerId);
         }
 
         private async Task<IEnumerable<int>> GetUserLikees(int userId)
         {
-            var user = await this._context.Users.Include(x => x.Likers)
-                                                .Include(x => x.Likees)
-                                                .FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await this._context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             return user.Likees.Where(u => u.LikerId == userId).Select(u => u.LikeeId);
         }
