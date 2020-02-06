@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -94,7 +94,13 @@ namespace DatinApp.API
             app.UseAuthentication();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Fallback", action = "Index" }
+                );
+            });
         }
     }
 }
